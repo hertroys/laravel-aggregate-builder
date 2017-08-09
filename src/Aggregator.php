@@ -85,7 +85,8 @@ class Aggregator
 
     public function by($column, $as = null)
     {
-        $this->groups[] = [$column, implode(func_get_args(), ' as ')];
+        $group = [$column, implode(array_filter(func_get_args()), ' as ')];
+        $this->groups[] = $group;
 
         return $this;
     }
