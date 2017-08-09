@@ -16,10 +16,7 @@ $agg->table('people')
 It can be used in the same way as the standard [Laravel query builder](http://laravel.com/docs/queries), with `where`, `orderBy` and `join` clauses, and so on. It only overrides the way the aggregate functions (`count`, `min`, `max`, `sum`, `avg`) are used. The underlying query builder can be retrieved with `->getQuery()`
 
 ## Aggregate functions
-With the Laravel query builder it is not possible to chain aggregate functions, like:
-`DB::table('orders')->min('amount')->max('amount')->sum('amount')->count()`
-
-The aggregate-builder facilitates this. The aggregate functions add to the raw column select. The query result is returned with `->get()`.
+The aggregate-builder facilitates chaining aggregate functions. The query result is returned with `->get()`.
 
 ```
 $agg->table('people')->min('age')->max('age')->avg('age')->get();
@@ -46,10 +43,7 @@ Illuminate\Support\Collection Object
 ```
 
 ## groupBy
-The Laravel query builder does not support adding a groupBy to an aggregate function; only the first result is returned.
-`DB::table('people')->groupBy('gender_id')->avg('age') // 54.8889`
-
-Therefore, you might find yourself using constructs like
+The Laravel query builder does not support adding a groupBy to an aggregate function and you might find yourself using constructs like
 `DB::table('people')->select(DB::raw('avg(age) as age_avg'))->groupBy('gender_id')->addSelect('gender_id')->get()`
 
 The aggregate builder offers the `by` shorthand which
