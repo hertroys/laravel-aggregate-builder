@@ -1,0 +1,20 @@
+{
+    "name": "hertroys/laravel-aggregate-builder",
+    "description": "Laravel 5 aggregate query builder",
+    "keywords": ["laravel", "aggregates", "aggregator", "query-builder"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Abram Hertorys",
+            "email": "hertroys@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/database": "5.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hertroys\\Aggregator\\": "src/"
+        }
+    }
+}
