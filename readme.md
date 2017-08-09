@@ -44,6 +44,7 @@ Illuminate\Support\Collection Object
 
 ## groupBy
 The Laravel query builder does not support adding a groupBy to an aggregate function and you might find yourself using constructs like
+
 `DB::table('people')->select(DB::raw('avg(age) as age_avg'))->groupBy('gender_id')->addSelect('gender_id')->get()`
 
 The aggregate builder offers the `by` shorthand which
