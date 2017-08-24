@@ -115,7 +115,7 @@ Queries:
 ```
 
 ### Cube
-With *n* groups, `cube` returns 2^*n* collections, with group subtotals for every combination in the following order
+With *n>0* groups, `cube` returns 2^*n* collections, with group subtotals for every combination in the following order
 
 `->by(a)->by(b)->by(c)->cube()`
 
