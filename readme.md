@@ -152,5 +152,5 @@ The `HasAggregator` trait adds the static function `aggregator` to an eloquent c
 ```
 $agg = \App\Person::aggregator();
 
-$agg->count()->get();
+$agg->count()->get()->first()->count
 ```
