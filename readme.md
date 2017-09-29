@@ -13,7 +13,7 @@ $agg->table('people')
     ->get();
 ```
 
-It can be used in the same way as the standard [Laravel query builder](http://laravel.com/docs/queries), with `where`, `orderBy` and `join` clauses, and so on. It only overrides the way the aggregate functions (`count`, `min`, `max`, `sum`, `avg`) are used. The underlying query builder can be retrieved with `->getQuery()`
+It can be used in the same way as the standard [Laravel query builder](http://laravel.com/docs/queries), with `where`, `join` and `orderBy` clauses, and so on. It only overrides the way the aggregate functions (`count`, `min`, `max`, `sum`, `avg`) are used. The underlying query builder can be retrieved with `->getQuery()`
 
 ## Aggregate functions
 The aggregate-builder facilitates chaining aggregate functions. The query result is returned with `->get()`.
@@ -152,5 +152,5 @@ The `HasAggregator` trait adds the static function `aggregator` to an eloquent c
 ```
 $agg = \App\Person::aggregator();
 
-$agg->count()->get()->first()->count
+$agg->count()->get()->first()->count;
 ```
