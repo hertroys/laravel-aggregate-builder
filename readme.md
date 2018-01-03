@@ -9,7 +9,7 @@ $agg->table('people')
     ->min('age')
     ->max('age')
     ->avg('age')
-    ->by('gender_id')
+    ->groupBy('gender_id')
     ->get();
 ```
 
@@ -47,13 +47,13 @@ The Laravel query builder does not support adding a groupBy to an aggregate func
 
 `DB::table('people')->select(DB::raw('avg(age) as age_avg'))->groupBy('gender_id')->addSelect('gender_id')->get()`
 
-The aggregate builder offers the `by` shorthand which
+The aggregate builder overwrites the `groupBy` such that it
 
 - adds the group, like `->groupBy('column')`
 - and the select, like `->addSelect('column')`
 
 ```
-$agg->table('people')->avg('age')->by('gender_id')->get();
+$agg->table('people')->avg('age')->groupBy('gender_id')->get();
 ```
 
 Output:
@@ -90,7 +90,7 @@ Besides `->get()` to retrieve the result, the aggregate-builder exposes the `rol
 
 ### Rollup
 With *n* groups, `rollup` returns *n*+1 collections, with group subtotals from right to left
-`->by(a)->by(b)->by(c)->rollup()`
+`->groupBy(a)->groupBy(b)->groupBy(c)->rollup()`
 
 1. (a, b, c)
 2. (a, b)
@@ -99,9 +99,9 @@ With *n* groups, `rollup` returns *n*+1 collections, with group subtotals from r
 
 ```
 $agg->table('people')
-    ->by('gender_id')
-    ->by('hair_colour_id')
-    ->by('eye_colour_id')
+    ->groupBy('gender_id')
+    ->groupBy('hair_colour_id')
+    ->groupBy('eye_colour_id')
     ->count()
     ->rollup();
 ```
@@ -117,7 +117,7 @@ Queries:
 ### Cube
 With *n>0* groups, `cube` returns 2^*n* collections, with group subtotals for every combination in the following order
 
-`->by(a)->by(b)->by(c)->cube()`
+`->groupBy(a)->groupBy(b)->groupBy(c)->cube()`
 
 1. (a, b, c)
 2. (a, b)
@@ -132,8 +132,8 @@ This is especially convenient for two-dimensional tables. The cells are returned
 
 ```
 $agg->table('people')
-    ->by('gender_id')
-    ->by('hair_colour_id')
+    ->groupBy('gender_id')
+    ->groupBy('hair_colour_id')
     ->count()
     ->cube();
 ```
