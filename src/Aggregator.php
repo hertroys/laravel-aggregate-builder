@@ -10,14 +10,7 @@ class Aggregator
 
     public function table($table)
     {
-        $this->newQuery($table);
-
-        return $this;
-    }
-
-    public function newQuery($on)
-    {
-        $this->query = app('db')->table($on);
+        $this->query = app('db')->table($table);
 
         return $this;
     }
@@ -169,7 +162,7 @@ class Aggregator
 
     public function fresh()
     {
-        $this->newQuery($this->query->from);
+        $this->table($this->query->from);
         $this->groups = [];
 
         return $this;
