@@ -85,44 +85,6 @@ class Aggregator
         return $this;
     }
 
-    // If "n" is the number of columns listed in the ROLLUP,
-    // there will be n+1 levels of subtotals
-    public function rollup() // :Illuminate\Support\Collection
-    {
-        $result[] = $this->get();
-
-        foreach (array_reverse($this->groups) as $group) {
-
-            $this->removeGroup($group);
-
-            $result[] = $this->query->get();
-        }
-
-        return collect($result);
-    }
-
-    // If "n" is the number of columns listed in the CUBE,
-    // there will be 2^n subtotal combinations.
-    // A, B, C => [[A,B,C], [A,B], [A,C], [A], [B,C], [B], [C], []]
-    public function cube() // :Illuminate\Support\Collection
-    {
-        // Ideal for tables, if one puts one dimension on the x-axis and
-        // antoher on the y-axis, the subtotals for x are the 2nd element,
-        // the subtotals for y are the 3d and the grand total is the 4th.
-        // X, Y => [[X,Y], [X], [Y], []]
-
-        $combinations = $this->cubeCombine($this->groups);
-
-        foreach ($combinations as $combo) {
-            $this->removeGroups($this->groups);
-            $this->addGroups($combo);
-
-            $result[] = $this->query->get();
-        }
-
-        return collect($result);
-    }
-
     protected function addGroup($group)
     {
         $this->groups[] = $group;
@@ -148,41 +110,45 @@ class Aggregator
         // if the groups-attribute is an empty array instead of null.
     }
 
-    protected function addGroups($groups)
+    // If "n" is the number of columns listed in the ROLLUP,
+    // there will be n+1 levels of subtotals
+    public function rollup() // :Illuminate\Support\Collection
     {
-        array_walk($groups, [$this, 'addGroup']);
+        $result[] = $this->get();
+
+        foreach (array_reverse($this->groups) as $group) {
+
+            $this->removeGroup($group);
+
+            $result[] = $this->query->get();
+        }
+
+        return collect($result);
     }
 
-    protected function removeGroups($groups)
+    // If "n" is the number of columns listed in the CUBE,
+    // there will be 2^n subtotal combinations.
+    // A, B, C => [[A,B,C], [A,B], [A,C], [A], [B,C], [B], [C], []]
+    public function cube() // :Illuminate\Support\Collection
     {
-        array_walk($groups, [$this, 'removeGroup']);
+        // Ideal for tables, if one puts one dimension on the x-axis and
+        // antoher on the y-axis, the subtotals for x are the 2nd element,
+        // the subtotals for y are the 3d and the grand total is the 4th.
+        $combinations = $this->cubeCombine($this->groups);
+
+        foreach ($combinations as $combo) {
+            $this->clear()->groupBy(...$combo);
+            $result[] = $this->query->get();
+        }
+
+        return collect($result);
     }
 
-    public function fresh()
+    protected function clear()
     {
-        $this->table($this->query->from);
-        $this->groups = [];
+        array_walk($this->groups, [$this, 'removeGroup']);
 
         return $this;
-    }
-
-    public function flip()
-    {
-        $this->groups = array_reverse($this->groups);
-
-        return $this;
-    }
-
-    public function setGroups($groups)
-    {
-        $this->groups = $groups;
-
-        return $this;
-    }
-
-    public function getGroups()
-    {
-        return $this->groups;
     }
 
     public function getQuery()
