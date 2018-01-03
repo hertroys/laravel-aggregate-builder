@@ -68,7 +68,7 @@ class Aggregator
 
         $column = $this->wrap($column);
 
-        $this->query->addSelect(app('db')->raw("$function($column) as $alias"));
+        $this->addSelect(app('db')->raw("$function($column) as $alias"));
 
         return $this;
     }
@@ -78,9 +78,9 @@ class Aggregator
         return str_replace('*_', '', $column.'_'.$function);
     }
 
-    protected function wrap($value)
+    public function wrap($value)
     {
-        return $this->query->getGrammar()->columnize([$value]);
+        return $this->query->getGrammar()->wrap($value);
     }
 
     public function by($column, $as = null)
