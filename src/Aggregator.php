@@ -15,53 +15,55 @@ class Aggregator
         return $this;
     }
 
-    public function get() // :Illuminate\Support\Collection
+    public function get()
     {
-        $this->regroup();
-
         return $this->query->get();
-        // Regrettably, we cannot renew and repopulate the query,
-        // since we don't track all the where's and other modifiers.
-        // For rollup/cube we only manage groups and group aliasses.
     }
 
-    public function count($column = '*', $as = null)
+    public function toSql()
     {
-        return $this->aggregate(__FUNCTION__, $column, $as);
+        return $this->query->toSql();
     }
 
-    public function min($column, $as = null)
+    public function count($column = '*')
     {
-        return $this->aggregate(__FUNCTION__, $column, $as);
+        return $this->aggregate(__FUNCTION__, $column);
     }
 
-    public function max($column, $as = null)
+    public function min($column)
     {
-        return $this->aggregate(__FUNCTION__, $column, $as);
+        return $this->aggregate(__FUNCTION__, $column);
     }
 
-    public function sum($column, $as = null)
+    public function max($column)
     {
-        return $this->aggregate(__FUNCTION__, $column, $as);
+        return $this->aggregate(__FUNCTION__, $column);
     }
 
-    public function avg($column, $as = null)
+    public function sum($column)
     {
-        return $this->aggregate(__FUNCTION__, $column, $as);
+        return $this->aggregate(__FUNCTION__, $column);
     }
 
-    public function average($column, $as = null)
+    public function avg($column)
     {
-        return $this->avg($column, $as);
+        return $this->aggregate(__FUNCTION__, $column);
     }
 
-    protected function aggregate($function, $column, $as)
+    public function average($column)
     {
-        $alias = $this->wrap($as ?: $this->alias($function, $column));
+        return $this->avg($column);
+    }
 
-        $column = $this->wrap($column);
+    protected function aggregate($function, $column)
+    {
+        $segments = explode(' as ', $column);
+        $alias = count($segments) > 1 ? end($segments) : $this->alias($function, $segments[0]);
 
-        $this->addSelect(app('db')->raw("$function($column) as $alias"));
+        $name = $this->wrap($segments[0]);
+        $alias = $this->wrap($alias);
+
+        $this->addSelect(app('db')->raw("$function($name) as $alias"));
 
         return $this;
     }
@@ -76,10 +78,9 @@ class Aggregator
         return $this->query->getGrammar()->wrap($value);
     }
 
-    public function by($column, $as = null)
+    public function groupBy(...$groups)
     {
-        $group = [$column, implode(array_filter(func_get_args()), ' as ')];
-        $this->groups[] = $group;
+        array_walk($groups, [$this, 'addGroup']);
 
         return $this;
     }
@@ -92,7 +93,7 @@ class Aggregator
 
         foreach (array_reverse($this->groups) as $group) {
 
-            $this->removeGroup(...$group);
+            $this->removeGroup($group);
 
             $result[] = $this->query->get();
         }
@@ -113,7 +114,6 @@ class Aggregator
         $combinations = $this->cubeCombine($this->groups);
 
         foreach ($combinations as $combo) {
-
             $this->removeGroups($this->groups);
             $this->addGroups($combo);
 
@@ -123,15 +123,23 @@ class Aggregator
         return collect($result);
     }
 
-    protected function addGroup($column, $as)
+    protected function addGroup($group)
     {
-        $this->query->groupBy($column)->addSelect($as);
+        $this->groups[] = $group;
+
+        $segments = explode(' as ', $group);
+
+        $this->query->groupBy($segments[0])->addSelect($group);
     }
 
-    protected function removeGroup($column, $as)
+    protected function removeGroup($group)
     {
-        $this->unsetArrayValue($this->query->groups, $column);
-        $this->unsetArrayValue($this->query->columns, $as);
+        $this->unsetArrayValue($this->groups, $group);
+
+        $segments = explode(' as ', $group);
+
+        $this->unsetArrayValue($this->query->groups, $segments[0]);
+        $this->unsetArrayValue($this->query->columns, $group);
 
         if (count($this->query->groups) === 0) {
             $this->query->groups = null;
@@ -142,22 +150,12 @@ class Aggregator
 
     protected function addGroups($groups)
     {
-        foreach ($groups as $group) {
-            $this->addGroup(...$group);
-        }
+        array_walk($groups, [$this, 'addGroup']);
     }
 
     protected function removeGroups($groups)
     {
-        foreach ($groups as $group) {
-            $this->removeGroup(...$group);
-        }
-    }
-
-    protected function regroup()
-    {
-        $this->removeGroups($this->groups);
-        $this->addGroups($this->groups);
+        array_walk($groups, [$this, 'removeGroup']);
     }
 
     public function fresh()
