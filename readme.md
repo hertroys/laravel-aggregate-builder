@@ -86,7 +86,7 @@ Illuminate\Support\Collection Object
 ```
 
 ## Rollup and Cube
-Besides `->get()` to retrieve the result, the aggregate-builder exposes the `rollup` and `cube` functions. These should be used in conjunction with the `->by()` shorthand and return a collection of collections, the first being the same result as from `get`, the others being subtotals over the different groups. They emulate the operations in [Oracle](https://oracle-base.com/articles/misc/rollup-cube-grouping-functions-and-grouping-sets) and [SQL Server](https://technet.microsoft.com/en-us/library/bb522495(v=sql.105).aspx).
+Besides `->get()` to retrieve the result, the aggregate-builder exposes the `rollup` and `cube` functions. These should be used in conjunction with the `-groupBy()` and return a collection of collections, the first being the same result as from `get`, the others being subtotals over the different groups. They emulate the operations in [Oracle](https://oracle-base.com/articles/misc/rollup-cube-grouping-functions-and-grouping-sets) and [SQL Server](https://technet.microsoft.com/en-us/library/bb522495(v=sql.105).aspx).
 
 ### Rollup
 With *n* groups, `rollup` returns *n*+1 collections, with group subtotals from right to left
