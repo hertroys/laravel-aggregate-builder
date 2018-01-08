@@ -96,12 +96,12 @@ class Aggregator
 
     protected function removeGroup($group)
     {
-        $this->unsetArrayValue($this->groups, $group);
+        array_unset_value($this->groups, $group);
 
         $segments = explode(' as ', $group);
 
-        $this->unsetArrayValue($this->query->groups, $segments[0]);
-        $this->unsetArrayValue($this->query->columns, $group);
+        array_unset_value($this->query->groups, $segments[0]);
+        array_unset_value($this->query->columns, $group);
 
         if (count($this->query->groups) === 0) {
             $this->query->groups = null;
@@ -154,13 +154,6 @@ class Aggregator
     public function getQuery()
     {
         return $this->query;
-    }
-
-    protected function unsetArrayValue(&$array, $value)
-    {
-        if (($key = array_search($value, (array)$array)) !== false) {
-            unset($array[$key]);
-        }
     }
 
     protected function cubeCombine($array)
