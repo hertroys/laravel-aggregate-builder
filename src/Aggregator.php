@@ -134,7 +134,7 @@ class Aggregator
         // Ideal for tables, if one puts one dimension on the x-axis and
         // antoher on the y-axis, the subtotals for x are the 2nd element,
         // the subtotals for y are the 3d and the grand total is the 4th.
-        $combinations = $this->cubeCombine($this->groups);
+        $combinations = array_pow($this->groups);
 
         foreach ($combinations as $combo) {
             $this->clear()->groupBy(...$combo);
@@ -154,28 +154,6 @@ class Aggregator
     public function getQuery()
     {
         return $this->query;
-    }
-
-    protected function cubeCombine($array)
-    {
-        $count = count($array);
-        $members = pow(2, $count);
-
-        for ($i = 0; $i < $members; $i++) {
-            $b = sprintf("%0".$count."b", $i);
-            // 'b' = binary representation
-            // so, 0 => 00, 1 => 01, 2 => 10, &c.
-            $combo = [];
-
-            for ($j = 0; $j < $count; $j++) {
-                if ($b{$j} == '1') {
-                    $combo[] = $array[$j];
-                }
-            }
-            $combos[] = $combo;
-        }
-
-        return array_reverse($combos);
     }
 
     public function __call($method, $parameters)
