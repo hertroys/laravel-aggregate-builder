@@ -59,7 +59,7 @@ class Aggregator
     {
         $segments = explode(' as ', $column);
         $alias = count($segments) > 1 ? end($segments)
-            : $this->alias($function, $segments[0]);
+            : $this->alias($function, $column);
 
         $name = $this->wrap($segments[0]);
         $alias = $this->wrap($alias);
