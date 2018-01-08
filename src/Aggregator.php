@@ -86,7 +86,7 @@ class Aggregator
         return $this;
     }
 
-    protected function clear()
+    public function clear()
     {
         array_walk($this->groups, [$this, 'removeGroup']);
 
