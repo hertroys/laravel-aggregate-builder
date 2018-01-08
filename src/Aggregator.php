@@ -58,7 +58,8 @@ class Aggregator
     protected function aggregate($function, $column)
     {
         $segments = explode(' as ', $column);
-        $alias = count($segments) > 1 ? end($segments) : $this->alias($function, $segments[0]);
+        $alias = count($segments) > 1 ? end($segments)
+            : $this->alias($function, $segments[0]);
 
         $name = $this->wrap($segments[0]);
         $alias = $this->wrap($alias);
@@ -81,6 +82,13 @@ class Aggregator
     public function groupBy(...$groups)
     {
         array_walk($groups, [$this, 'addGroup']);
+
+        return $this;
+    }
+
+    protected function clear()
+    {
+        array_walk($this->groups, [$this, 'removeGroup']);
 
         return $this;
     }
@@ -112,14 +120,13 @@ class Aggregator
 
     // If "n" is the number of columns listed in the ROLLUP,
     // there will be n+1 levels of subtotals
-    public function rollup() // :Illuminate\Support\Collection
+    // A, B, C => [[A,B,C], [A,B], [A], []]
+    public function rollup() :\Illuminate\Support\Collection
     {
         $result[] = $this->get();
 
         foreach (array_reverse($this->groups) as $group) {
-
             $this->removeGroup($group);
-
             $result[] = $this->query->get();
         }
 
@@ -129,11 +136,8 @@ class Aggregator
     // If "n" is the number of columns listed in the CUBE,
     // there will be 2^n subtotal combinations.
     // A, B, C => [[A,B,C], [A,B], [A,C], [A], [B,C], [B], [C], []]
-    public function cube() // :Illuminate\Support\Collection
+    public function cube() :\Illuminate\Support\Collection
     {
-        // Ideal for tables, if one puts one dimension on the x-axis and
-        // antoher on the y-axis, the subtotals for x are the 2nd element,
-        // the subtotals for y are the 3d and the grand total is the 4th.
         $combinations = array_pow($this->groups);
 
         foreach ($combinations as $combo) {
@@ -142,13 +146,6 @@ class Aggregator
         }
 
         return collect($result);
-    }
-
-    protected function clear()
-    {
-        array_walk($this->groups, [$this, 'removeGroup']);
-
-        return $this;
     }
 
     public function getQuery()
