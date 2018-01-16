@@ -127,7 +127,7 @@ class Aggregator
 
         foreach (array_reverse($this->groups) as $group) {
             $this->removeGroup($group);
-            $result[] = $this->query->get();
+            $result[] = $this->get();
         }
 
         return collect($result);
@@ -142,7 +142,7 @@ class Aggregator
 
         foreach ($combinations as $combo) {
             $this->clear()->groupBy(...$combo);
-            $result[] = $this->query->get();
+            $result[] = $this->get();
         }
 
         return collect($result);
