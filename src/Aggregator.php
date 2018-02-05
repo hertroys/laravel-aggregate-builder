@@ -2,27 +2,30 @@
 
 namespace Hertroys\Aggregator;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\Query\Builder;
+
 class Aggregator
 {
     public $query;
 
     protected $groups = [];
 
+    public function __construct(Connection $connection)
+    {
+        $this->query = $connection->query();
+    }
+
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
     public function table($table)
     {
-        $this->query = app('db')->table($table);
+        $this->query->from($table);
 
         return $this;
-    }
-
-    public function get()
-    {
-        return $this->query->get();
-    }
-
-    public function toSql()
-    {
-        return $this->query->toSql();
     }
 
     public function count($column = '*')
@@ -64,7 +67,7 @@ class Aggregator
         $name = $this->wrap($segments[0]);
         $alias = $this->wrap($alias);
 
-        $this->addSelect(app('db')->raw("$function($name) as $alias"));
+        $this->addSelect($this->query->raw("$function($name) as $alias"));
 
         return $this;
     }
@@ -148,15 +151,17 @@ class Aggregator
         return collect($result);
     }
 
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
     public function __call($method, $parameters)
     {
-        $this->query->$method(...$parameters);
+        $return = $this->query->$method(...$parameters);
 
-        return $this;
+        if (
+            is_null($return) ||
+            (is_object($return) && get_class($return) === Builder::class)
+        ) {
+            return $this;
+        }
+
+        return $return;
     }
 }
