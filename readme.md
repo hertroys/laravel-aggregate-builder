@@ -21,7 +21,6 @@ The aggregate-builder facilitates chaining aggregate functions. The query result
 
 ```
 $agg->table('people')->min('age')->max('age')->avg('age')->get();
-
 ```
 
 Output:
