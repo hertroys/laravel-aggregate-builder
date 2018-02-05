@@ -1,7 +1,6 @@
 <?php
 
 use Hertroys\Aggregator\Aggregator;
-use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\TestCase;
 
 class AggregatorTest extends TestCase
