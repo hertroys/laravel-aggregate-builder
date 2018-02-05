@@ -1,0 +1,13 @@
+box: alexwijn/docker-git-php-composer
+build:
+  steps:
+    - script:
+        name: install dependencies
+        code: composer install --no-interaction
+    - script:
+        name: test
+        code: phpunit --configuration phpunit.xml
+    - script:
+        name: codesniffer
+        code: phpcs src --standard='PSR2'
+
