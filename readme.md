@@ -1,5 +1,7 @@
 # Aggregate builder
 
+[![wercker status](https://app.wercker.com/status/0d0afd8b0f3deeeaa8536e887e415548/s/master "wercker status")](https://app.wercker.com/project/byKey/0d0afd8b0f3deeeaa8536e887e415548)
+
 The laravel-aggregate-builder simplifies building aggregating queries.
 
 ```
