@@ -3,7 +3,8 @@
 The laravel-aggregate-builder simplifies building aggregating queries.
 
 ```
-$agg = new \Hertroys\Aggregator\Aggregator;
+$connection = new \Illuminate\Database\Connection(...);
+$agg = new \Hertroys\Aggregator\Aggregator($connection);
 
 $agg->table('people')
     ->min('age')
