@@ -1,23 +1,26 @@
 {
-    "name": "hertroys/laravel-aggregate-builder",
-    "description": "Laravel 5 aggregate query builder",
-    "keywords": ["laravel", "aggregates", "aggregator", "query-builder"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Abram Hertroys",
-            "email": "hertroys@gmail.com"
-        }
-    ],
-    "require": {
-        "illuminate/database": "5.*"
-    },
-    "autoload": {
-        "files": [
-            "src/helpers.php"
-        ],
-        "psr-4": {
-            "Hertroys\\Aggregator\\": "src/"
-        }
+  "name": "hertroys/laravel-aggregate-builder",
+  "description": "Laravel 5 aggregate query builder",
+  "keywords": ["laravel", "aggregates", "aggregator", "query-builder"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Abram Hertroys",
+      "email": "hertroys@gmail.com"
     }
+  ],
+  "require": {
+    "illuminate/database": "5.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "files": [
+      "src/helpers.php"
+    ],
+    "psr-4": {
+      "Hertroys\\Aggregator\\": "src/"
+    }
+  }
 }
