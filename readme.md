@@ -149,7 +149,7 @@ Queries:
 ```
 
 ## Eloquent
-The `HasAggregator` trait adds the static function `aggregator` to an eloquent class. This returns the aggregate builder and sets the table.
+The `HasAggregator` trait adds the static function `aggregator` to an eloquent class. This returns the aggregate builder and sets the models connection and the table.
 
 ```
 $agg = \App\Person::aggregator();
