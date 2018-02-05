@@ -155,8 +155,7 @@ class Aggregator
     {
         $return = $this->query->$method(...$parameters);
 
-        if (
-            is_null($return) ||
+        if (is_null($return) ||
             (is_object($return) && get_class($return) === Builder::class)
         ) {
             return $this;
