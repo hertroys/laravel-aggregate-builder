@@ -18,7 +18,7 @@ trait HasAggregator
 
     public function getAggregator()
     {
-        $aggregator = new Aggregator;
+        $aggregator = new Aggregator($this->getConnection());
 
         return $aggregator->table($this->getTable());
     }
