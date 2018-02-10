@@ -9,5 +9,4 @@ build:
         code: vendor/bin/phpunit
     - script:
         name: codesniffer
-        code: phpcs src --standard='PSR2'
-
+        code: vendor/bin/phpcs src --standard='PSR2'
