@@ -1,4 +1,4 @@
-box: alexwijn/docker-git-php-composer
+box: shincoder/homestead
 build:
   steps:
     - script:
@@ -6,7 +6,7 @@ build:
         code: composer install --no-interaction
     - script:
         name: test
-        code: phpunit --configuration phpunit.xml
+        code: vendor/bin/phpunit
     - script:
         name: codesniffer
         code: phpcs src --standard='PSR2'
